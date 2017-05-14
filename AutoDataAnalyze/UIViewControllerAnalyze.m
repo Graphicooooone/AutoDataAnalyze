@@ -7,8 +7,9 @@
 //
 
 #import "UIViewControllerAnalyze.h"
+#import "NSAnalyzer.h"
 
-
+static AnalyzerActionBlock _AnalyzerCtrBlock;
 @interface UIViewController (Analyzer)
 
 @end
@@ -33,7 +34,12 @@
 
 #pragma mark - UIViewControllerAnalyze
 @implementation UIViewControllerAnalyze
-+ (void)_changeAnalyzerStatus{
++ (void)_changeAnalyzerStatus:(AnalyzerActionBlock)block{
+    _AnalyzerCtrBlock = block;
+ 
+    BOOL b = [[NSUserDefaults standardUserDefaults] boolForKey:GAAnalyzerViewControllerHandle];
     
+    [[NSUserDefaults standardUserDefaults] setBool:!b forKey:GAAnalyzerViewControllerHandle];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 @end

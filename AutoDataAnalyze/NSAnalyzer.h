@@ -17,30 +17,46 @@ typedef NS_OPTIONS(NSUInteger, AnalyzeContentType){
     AnalyzeContentTypeAll               = NSUIntegerMax,
 };
 
-/**
- You only need to do the following things :
- 
- In GA_AnalyzeConfiguration.plist file , find 'Configuration' .
- setting 'FileSize'         : Specify the maximum size of the statistical file ///< 指定单个统计数据文件的最大大小
- setting 'ReportCycle'      : Specify the statistics report period             ///< 指定统计文件上报周期(多久上传一次)
- setting 'ReportAddress'    : Specify the data sending address                 ///< 指定统计文件上报地址
- setting 'WhenReportedClean': Specify when reported clean the source file      ///< 指定是否在上报完成后自动删除
- 
- */
+NS_ASSUME_NONNULL_BEGIN
+
+@class NSAnalyzer;
+@protocol NSAnalyzerRegistration <NSObject>
+
++ (void)AnalyzerRegisterInfo:(NSAnalyzer* )analyzer;
+
+@end
+
+typedef void(^AnalyzerActionBlock)(NSString* clsName);
+
 __attribute__((objc_subclassing_restricted))
 
 @interface NSAnalyzer : NSObject
 
 + (instancetype)shareAnalyzer;
+/** Registered the corresponding with the NSAnalyzer instance handle events */
+- (void)registerAnalyzerBlocks:(NSDictionary<NSString* , AnalyzerActionBlock>* )blockDic;
 
+
+///< dynamic Api
+/** All update operations in the next runLoop restart to take effect */
 - (void)updateAnalyzeContentType:(AnalyzeContentType)analyzeContentType status:(BOOL)isAnalyze;
+- (void)closeAllAnalyze;
+- (void)openAllAnalyze;
 
 @property (nonatomic,readonly,assign,getter=isAnalyzeApplication) BOOL analyzeApplication;
 @property (nonatomic,readonly,assign,getter=isAnalyzeViewController) BOOL analyzeViewController;
 @property (nonatomic,readonly,assign,getter=isAnalyzeView) BOOL analyzeView;
 @property (nonatomic,readonly,assign,getter=isAnalyzeViewEvent) BOOL analyzeViewEvent;
 
-- (void)closeAllAnalyze;
-- (void)openAllAnalyze;
-
 @end
+
+
+FOUNDATION_EXTERN NSString* const GAAnalyzerContentInfo;
+
+/** handle key*/
+FOUNDATION_EXTERN NSString* const GAAnalyzerAppDelegateHandle;
+FOUNDATION_EXTERN NSString* const GAAnalyzerViewControllerHandle;
+FOUNDATION_EXTERN NSString* const GAAnalyzerViewHandle;
+FOUNDATION_EXTERN NSString* const GAAnalyzerViewEventHandle;
+
+NS_ASSUME_NONNULL_END

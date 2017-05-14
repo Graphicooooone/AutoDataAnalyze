@@ -8,7 +8,9 @@
 
 #import "AppDelegateAnalyze.h"
 #import "AppDelegate.h"
+#import "NSAnalyzer.h"
 
+static AnalyzerActionBlock _AnalyzerAppDelegateBlock;
 @interface AppDelegate (Analyzer)
 
 @end
@@ -20,7 +22,12 @@
 
 #pragma mark - AppDelegateAnalyze
 @implementation AppDelegateAnalyze
-+ (void)_changeAnalyzerStatus{
++ (void)_changeAnalyzerStatus:(AnalyzerActionBlock)block{
+    _AnalyzerAppDelegateBlock = block;
     
+    BOOL b = [[NSUserDefaults standardUserDefaults] boolForKey:GAAnalyzerAppDelegateHandle];
+    
+    [[NSUserDefaults standardUserDefaults] setBool:!b forKey:GAAnalyzerAppDelegateHandle];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 @end

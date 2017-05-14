@@ -7,6 +7,10 @@
 //
 
 #import "UIViewAnalyze.h"
+#import "NSAnalyzer.h"
+
+static AnalyzerActionBlock _AnalyzerViewBlock;
+static AnalyzerActionBlock _AnalyzerViewEventBlock;
 
 @interface UIView (Analyzer)
 
@@ -19,7 +23,19 @@
 
 #pragma mark - UIViewAnalyze
 @implementation UIViewAnalyze
-+ (void)_changeAnalyzerStatus{
++ (void)_changeAnalyzerStatus:(AnalyzerActionBlock)block{
+    _AnalyzerViewBlock = block;
     
+    BOOL b = [[NSUserDefaults standardUserDefaults] boolForKey:GAAnalyzerViewHandle];
+    
+    [[NSUserDefaults standardUserDefaults] setBool:!b forKey:GAAnalyzerViewHandle];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
++ (void)_changeViewEventAnalyzerStatus:(AnalyzerActionBlock)block{
+    _AnalyzerViewEventBlock = block;
+    BOOL b = [[NSUserDefaults standardUserDefaults] boolForKey:GAAnalyzerViewEventHandle];
+    
+    [[NSUserDefaults standardUserDefaults] setBool:!b forKey:GAAnalyzerViewEventHandle];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 @end
